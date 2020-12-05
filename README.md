@@ -1,0 +1,2 @@
+# GmodNetBot
+GmodNET Discord bot
