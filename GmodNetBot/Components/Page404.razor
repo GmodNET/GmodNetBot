@@ -1,5 +1,14 @@
-﻿<h1>404 Not Found</h1>
+﻿@using Microsoft.AspNetCore.Http
+
+@inject IHttpContextAccessor httpContextAccessor
+
+<h1>404 Not Found</h1>
 
 @code {
+    
+    override protected void OnInitialized()
+    {
+        httpContextAccessor.HttpContext.Response.StatusCode = 404;
+    }
 
 }
