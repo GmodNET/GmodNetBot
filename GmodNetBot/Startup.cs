@@ -55,6 +55,17 @@ namespace GmodNetBot
                 endpoints.MapRazorPages();
                 endpoints.MapFallbackToPage("/Index");
             });
+
+#if DEBUG
+            try
+            {
+                File.WriteAllText("update.browserlink", DateTime.Now.ToString());
+            }
+            catch
+            {
+
+            }
+#endif
         }
     }
 }
