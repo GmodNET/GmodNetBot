@@ -1,0 +1,17 @@
+﻿@using Microsoft.Extensions.Configuration
+
+@inject NavigationManager navigationManager
+@inject IConfiguration configuration
+
+<a href="@baseUri" class="btn btn-lg btn-primary">
+    <DiscordLogo Color="white" Size="25px"/> Login with Discord
+</a>
+
+@code {
+    string baseUri;
+
+    protected override void OnInitialized()
+    {
+        baseUri = "https:" + navigationManager.BaseUri;
+    }
+}
