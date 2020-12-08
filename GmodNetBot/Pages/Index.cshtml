@@ -1,15 +1,21 @@
 ﻿@page "/"
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@{ 
+@{
     Layout = null;
 }
 
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Hi!</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>GmodNET Discord Bot</title>
 </head>
 <body>
     <component type="typeof(GmodNetBot.Components.App)" render-mode="Static" />
+
+    <script src="~/jquery-3.5.1.min.js"></script>
+    <script src="~/bootstrap-453.bundle.min.js"></script>
 </body>
 </html>
