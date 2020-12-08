@@ -1,17 +1,33 @@
 ﻿@using Microsoft.Extensions.Configuration
+@using System.Text
+@using System.Web
 
 @inject NavigationManager navigationManager
 @inject IConfiguration configuration
 
-<a href="@baseUri" class="btn btn-lg btn-primary">
+<a href="@DiscordAuthUrl()" class="btn btn-lg btn-primary">
     <DiscordLogo Color="white" Size="25px"/> Login with Discord
 </a>
 
 @code {
-    string baseUri;
+    string discordAuthUrl;
 
     protected override void OnInitialized()
     {
-        baseUri = "https:" + navigationManager.BaseUri;
+
+    }
+
+    string DiscordAuthUrl()
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.Append(@"https://discord.com/api/oauth2/authorize?response_type=code&client_id=");
+        stringBuilder.Append(configuration["DiscordClient"]);
+        stringBuilder.Append(@"&scope=identify%20connections");
+        stringBuilder.Append(@"&prompt=consent");
+        stringBuilder.Append(@"&redirect_uri=");
+        stringBuilder.Append(HttpUtility.UrlEncode(navigationManager.BaseUri + "contributor-callback"));
+
+        return stringBuilder.ToString();
     }
 }
