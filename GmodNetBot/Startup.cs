@@ -27,6 +27,8 @@ namespace GmodNetBot
         {
             services.AddRazorPages();
             services.AddHttpContextAccessor();
+            services.AddHttpClient();
+            services.AddSingleton<GitHubClientProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
