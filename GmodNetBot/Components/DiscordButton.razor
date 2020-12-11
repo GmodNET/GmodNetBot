@@ -19,7 +19,7 @@
     {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.Append(@"https://discord.com/api/oauth2/authorize?response_type=code&client_id=");
+        stringBuilder.Append(configuration.GetDiscordEndpoint() +  "/oauth2/authorize?response_type=code&client_id=");
         stringBuilder.Append(configuration["DiscordClient"]);
         stringBuilder.Append(@"&scope=identify%20connections");
         stringBuilder.Append(@"&prompt=consent");
