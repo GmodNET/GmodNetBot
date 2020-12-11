@@ -49,6 +49,23 @@ namespace GmodNetBot
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCookiePolicy(new CookiePolicyOptions()
+            {
+                MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
+                Secure = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always
+            });
+
+            app.Use(async (context, next) =>
+            {
+                if (!context.Request.Cookies.ContainsKey("GenericUserId"))
+                {
+                    context.Response.Cookies.Append("GenericUserId", Guid.NewGuid().ToString());
+                }
+
+                await next();
+            });
+
             app.UseStaticFiles();
 
             app.UseRouting();
