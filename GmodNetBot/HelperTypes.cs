@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GmodNetBot
 {
-    public record RequestStatus(bool Success, string message);
+    public record RequestStatus(bool Success, string Message);
     
     public record DiscordOauthTokenResponse(string token_type, string access_token);
 

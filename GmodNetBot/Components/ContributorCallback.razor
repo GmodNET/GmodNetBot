@@ -11,7 +11,9 @@
 
 @if(requestStatus is not null)
 {
-
+    <div class="row justify-content-center">
+        <RequestStatusReport StatusOfRequest="@requestStatus" />
+    </div>
 }
 
 @code {

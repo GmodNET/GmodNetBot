@@ -26,13 +26,13 @@ namespace GmodNetBot.Components
 
             FormUrlEncodedContent token_request_content = new FormUrlEncodedContent(new[]
             {
-            new KeyValuePair<string, string>("client_id", configuration["DiscordClient"]),
-            new KeyValuePair<string, string>("client_secret", configuration["DiscordSecret"]),
-            new KeyValuePair<string, string>("grant_type", "authorization_code"),
-            new KeyValuePair<string, string>("code", discord_auth_code),
-            new KeyValuePair<string, string>("redirect_uri", request_uri.AbsoluteUri.Split('?')[0]),
-            new KeyValuePair<string, string>("scope", "identify connections")
-        });
+                new KeyValuePair<string, string>("client_id", configuration["DiscordClient"]),
+                new KeyValuePair<string, string>("client_secret", configuration["DiscordSecret"]),
+                new KeyValuePair<string, string>("grant_type", "authorization_code"),
+                new KeyValuePair<string, string>("code", discord_auth_code),
+                new KeyValuePair<string, string>("redirect_uri", request_uri.AbsoluteUri.Split('?')[0]),
+                new KeyValuePair<string, string>("scope", "identify connections")
+            });
 
             HttpResponseMessage discord_response = await httpClient.PostAsync(configuration.GetDiscordEndpoint() + "/oauth2/token", token_request_content);
 
@@ -69,7 +69,7 @@ namespace GmodNetBot.Components
 
             if (!userConnections.Any(c => c.type == "github" && c.verified))
             {
-                requestStatus = new RequestStatus(false, "You don't have any verified GitHub accounts connected with Discord");
+                requestStatus = new RequestStatus(false, "You don't have any verified GitHub accounts connected with Discord :(");
                 return;
             }
 
@@ -110,10 +110,19 @@ namespace GmodNetBot.Components
             }
 
             IRole contributorRole = discordClient.GetGuild(configuration.GetDiscordServerId()).GetRole(configuration.GetContributorRoleId());
+
+            if(discordClient.GetGuild(configuration.GetDiscordServerId()).GetUser(ulong.Parse(userRecord.id)).Roles.Any(r => r.Id == contributorRole.Id))
+            {
+                requestStatus = new RequestStatus(false, "You are already Contributor 😕");
+                return;
+            }
+
             await discordClient.GetGuild(configuration.GetDiscordServerId()).GetUser(ulong.Parse(userRecord.id)).AddRoleAsync(contributorRole);
 
             await discordClient.GetGuild(configuration.GetDiscordServerId()).GetTextChannel(configuration.GetGeneralChannelId())
                 .SendMessageAsync($"We have a new contributor! Welcome {MentionUtils.MentionUser(ulong.Parse(userRecord.id))}!");
+
+            requestStatus = new RequestStatus(true, "Your Discord roles were successfully updated!");
         }
     }
 }

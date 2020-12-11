@@ -1,0 +1,31 @@
+﻿<div class="@("container-sm border rounded " + (StatusOfRequest.Success ? "border-success" : "border-danger"))">
+    <div class="@("row justify-content-center border-bottom " + (StatusOfRequest.Success ? "border-success" : "border-danger"))">
+        @if(StatusOfRequest.Success)
+        {
+            <h2 class="text-success">Success</h2>
+        }
+        else
+        {
+            <h2 class="text-danger">Error</h2>
+        }
+    </div>
+    <div class="row justify-content-center">
+        @if (StatusOfRequest.Success)
+        {
+            <p class="lead text-success">
+                @StatusOfRequest.Message
+            </p>
+        }
+        else
+        {
+            <p class="lead text-danger">
+                @StatusOfRequest.Message
+            </p>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RequestStatus StatusOfRequest { get; set; }
+}
