@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace GmodNetBot
 {
@@ -60,7 +61,14 @@ namespace GmodNetBot
             {
                 if (!context.Request.Cookies.ContainsKey("GenericUserId"))
                 {
-                    context.Response.Cookies.Append("GenericUserId", Guid.NewGuid().ToString());
+                    using RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider();
+
+                    byte[] random_seq = new byte[21];
+                    rngCsp.GetBytes(random_seq);
+
+                    string random_string = Convert.ToBase64String(random_seq);
+
+                    context.Response.Cookies.Append("GenericUserId", random_string);
                 }
 
                 await next();
