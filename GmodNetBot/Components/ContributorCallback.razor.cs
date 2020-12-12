@@ -30,7 +30,7 @@ namespace GmodNetBot.Components
                 new KeyValuePair<string, string>("client_secret", configuration["DiscordSecret"]),
                 new KeyValuePair<string, string>("grant_type", "authorization_code"),
                 new KeyValuePair<string, string>("code", discord_auth_code),
-                new KeyValuePair<string, string>("redirect_uri", request_uri.AbsoluteUri.Split('?')[0]),
+                new KeyValuePair<string, string>("redirect_uri", navigationManager.BaseUri + "discord-callback"),
                 new KeyValuePair<string, string>("scope", "identify connections")
             });
 

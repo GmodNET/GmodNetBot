@@ -91,11 +91,13 @@ namespace GmodNetBot
 
                             if(!String.IsNullOrEmpty(callbackState.InternalRedirect))
                             {
-                                QueryString redirectQuery = QueryString.Create(query);
-                                redirectQuery.Add("state", callbackState.State);
+                                QueryString redirectQuery = QueryString.Create(query.Where(p => p.Key != "state"));
+                                redirectQuery = redirectQuery.Add("state", callbackState.State);
 
                                 context.Response.Redirect(context.Request.Scheme + "://" +  context.Request.Host.Value 
-                                    + callbackState.InternalRedirect + redirectQuery.ToUriComponent());
+                                    + callbackState.InternalRedirect + redirectQuery.Value);
+
+                                return;
                             }
                         }
                         catch

@@ -1,31 +1,18 @@
 ﻿@using Microsoft.Extensions.Configuration
 @using System.Text
 @using System.Web
+@using Microsoft.AspNetCore.Http
+@using System.Security.Cryptography
+@using System.Text.Json
 
 @inject NavigationManager navigationManager
 @inject IConfiguration configuration
+@inject IHttpContextAccessor httpContextAccessor
 
 <a href="@DiscordAuthUrl()" class="btn btn-lg btn-primary">
     <DiscordLogo Color="white" Size="25px"/> Login with Discord
 </a>
 
 @code {
-    protected override void OnInitialized()
-    {
-
-    }
-
-    string DiscordAuthUrl()
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.Append(configuration.GetDiscordEndpoint() +  "/oauth2/authorize?response_type=code&client_id=");
-        stringBuilder.Append(configuration["DiscordClient"]);
-        stringBuilder.Append(@"&scope=identify%20connections");
-        stringBuilder.Append(@"&prompt=consent");
-        stringBuilder.Append(@"&redirect_uri=");
-        stringBuilder.Append(HttpUtility.UrlEncode(navigationManager.BaseUri + "contributor-callback"));
-
-        return stringBuilder.ToString();
-    }
+    
 }
