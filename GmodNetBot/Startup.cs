@@ -11,6 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text.Json;
 
 namespace GmodNetBot
 {
@@ -69,6 +72,37 @@ namespace GmodNetBot
                     string random_string = Convert.ToBase64String(random_seq);
 
                     context.Response.Cookies.Append("GenericUserId", random_string);
+                }
+
+                await next();
+            });
+
+            app.Use(async (context, next) =>
+            {
+                if(context.Request.Path == "/discord-callback")
+                {
+                    IQueryCollection query = context.Request.Query;
+
+                    if(query.ContainsKey("state"))
+                    {
+                        try
+                        {
+                            DiscordCallbackState callbackState = JsonSerializer.Deserialize<DiscordCallbackState>(query["state"]);
+
+                            if(!String.IsNullOrEmpty(callbackState.InternalRedirect))
+                            {
+                                QueryString redirectQuery = QueryString.Create(query);
+                                redirectQuery.Add("state", callbackState.State);
+
+                                context.Response.Redirect(context.Request.Scheme + "://" +  context.Request.Host.Value 
+                                    + callbackState.InternalRedirect + redirectQuery.ToUriComponent());
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                    }
                 }
 
                 await next();
