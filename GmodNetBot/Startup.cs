@@ -72,6 +72,8 @@ namespace GmodNetBot
                     string random_string = Convert.ToBase64String(random_seq);
 
                     context.Response.Cookies.Append("GenericUserId", random_string);
+
+                    context.Items.Add("GenericUserIdCookie", random_string);
                 }
 
                 await next();
