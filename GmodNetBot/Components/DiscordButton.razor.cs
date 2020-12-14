@@ -23,9 +23,20 @@ namespace GmodNetBot.Components
 
         string DiscordAuthUrl()
         {
+            string user_id;
+
+            if(httpContextAccessor.HttpContext.Request.Cookies.ContainsKey("GenericUserId"))
+            {
+                user_id = httpContextAccessor.HttpContext.Request.Cookies["GenericUserId"];
+            }
+            else
+            {
+                user_id = (string)httpContextAccessor.HttpContext.Items["GenericUserId"];
+            }
+
             using SHA256 hash_algorithm = SHA256.Create();
 
-            byte[] hashed_user_id = hash_algorithm.ComputeHash(Convert.FromBase64String(httpContextAccessor.HttpContext.Request.Cookies["GenericUserId"]));
+            byte[] hashed_user_id = hash_algorithm.ComputeHash(Convert.FromBase64String(user_id));
             string hashed_user_id_string = Convert.ToBase64String(hashed_user_id);
 
             string serilized_state = Encoding.UTF8

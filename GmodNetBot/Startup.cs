@@ -73,7 +73,7 @@ namespace GmodNetBot
 
                     context.Response.Cookies.Append("GenericUserId", random_string);
 
-                    context.Items.Add("GenericUserIdCookie", random_string);
+                    context.Items.Add("GenericUserId", random_string);
                 }
 
                 await next();
