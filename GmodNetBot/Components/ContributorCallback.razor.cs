@@ -31,6 +31,12 @@ namespace GmodNetBot.Components
 
             string discord_auth_code = request_query["code"];
 
+            if(!request_query.ContainsKey("state"))
+            {
+                requestStatus = new RequestStatus(false, "There is no Anti-CSRF token in this request");
+                return;
+            }
+
             using HttpClient httpClient = httpFactory.CreateClient();
 
             FormUrlEncodedContent token_request_content = new FormUrlEncodedContent(new[]
