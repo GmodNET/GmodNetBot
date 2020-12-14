@@ -9,6 +9,7 @@ using Octokit;
 using Discord.WebSocket;
 using Discord;
 using System.Net.Http;
+using Microsoft.Extensions.Primitives;
 
 namespace GmodNetBot.Components
 {
@@ -20,7 +21,15 @@ namespace GmodNetBot.Components
         {
             Uri request_uri = new Uri(navigationManager.Uri);
 
-            string discord_auth_code = QueryHelpers.ParseQuery(request_uri.Query)["code"];
+            Dictionary<string, StringValues> request_query = QueryHelpers.ParseQuery(request_uri.Query);
+
+            if(!request_query.ContainsKey("code"))
+            {
+                requestStatus = new RequestStatus(false, "There is no Discord auth code in the current request");
+                return;
+            }
+
+            string discord_auth_code = request_query["code"];
 
             using HttpClient httpClient = httpFactory.CreateClient();
 
