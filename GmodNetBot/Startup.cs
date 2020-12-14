@@ -56,7 +56,7 @@ namespace GmodNetBot
 
             app.UseCookiePolicy(new CookiePolicyOptions()
             {
-                MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
+                MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None,
                 Secure = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always
             });
 
@@ -66,7 +66,7 @@ namespace GmodNetBot
                 {
                     using RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider();
 
-                    byte[] random_seq = new byte[21];
+                    byte[] random_seq = new byte[64];
                     rngCsp.GetBytes(random_seq);
 
                     string random_string = Convert.ToBase64String(random_seq);

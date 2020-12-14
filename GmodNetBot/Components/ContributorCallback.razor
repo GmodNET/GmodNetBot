@@ -1,11 +1,13 @@
 ﻿@using Microsoft.Extensions.Configuration
 @using System.Net.Http
+@using Microsoft.AspNetCore.Http 
 
 @inject NavigationManager navigationManager
 @inject IHttpClientFactory httpFactory
 @inject IConfiguration configuration
 @inject GitHubClientProvider githubProvider
 @inject DiscordClientProvider discordProvider
+@inject IHttpContextAccessor httpContextAccessor
 
 @page "/contributor-callback"
 

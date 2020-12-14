@@ -10,6 +10,8 @@ using Discord.WebSocket;
 using Discord;
 using System.Net.Http;
 using Microsoft.Extensions.Primitives;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace GmodNetBot.Components
 {
@@ -34,6 +36,24 @@ namespace GmodNetBot.Components
             if(!request_query.ContainsKey("state"))
             {
                 requestStatus = new RequestStatus(false, "There is no Anti-CSRF token in this request");
+                return;
+            }
+
+            byte[] state_token = Convert.FromBase64String(request_query["state"]);
+
+            if(!httpContextAccessor.HttpContext.Request.Cookies.ContainsKey("GenericUserId"))
+            {
+                requestStatus = new RequestStatus(false, "There is no id cookie in the request");
+                return;
+            }
+
+            byte[] generic_user_id = Convert.FromBase64String(httpContextAccessor.HttpContext.Request.Cookies["GenericUserId"]);
+
+            using SHA256 sha256 = SHA256.Create();
+
+            if(!state_token.SequenceEqual(sha256.ComputeHash(generic_user_id)))
+            {
+                requestStatus = new RequestStatus(false, "Anti-CSRF token is invalid");
                 return;
             }
 
