@@ -5,6 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Text;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text.Json;
+using Microsoft.AspNetCore.Diagnostics;
+using Discord;
+using Discord.WebSocket;
 
 namespace GmodNetBot
 {
@@ -33,6 +47,32 @@ namespace GmodNetBot
         public static ulong GetDiscordErrorLogId(this IConfiguration configuration)
         {
             return ulong.Parse(configuration["DiscordErrorLogId"]);
+        }
+    }
+
+    public static class ApllicationExtensions
+    {
+        public static IApplicationBuilder UseMyExceptionHandler(this IApplicationBuilder app)
+        {
+            return app.UseExceptionHandler(errorApp =>
+            errorApp.Run(async context =>
+            {
+                context.Response.StatusCode = 500;
+                context.Response.ContentType = "text/plain";
+
+                IExceptionHandlerPathFeature exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+
+                await context.Response.WriteAsync($"Error 500: Internal Server Error. You unique request id is {context.TraceIdentifier}. " +
+                    "Contact administrator and provide request id to get help.");
+
+                DiscordSocketClient discord_client = context.RequestServices.GetService<DiscordClientProvider>().Client;
+
+                IConfiguration configuration = context.RequestServices.GetService<IConfiguration>();
+
+                _ = discord_client.GetGuild(configuration.GetDiscordServerId()).GetTextChannel(configuration.GetDiscordErrorLogId())
+                    .SendMessageAsync($"Web error 500. Request id {context.TraceIdentifier}. Error type: {exceptionHandlerPathFeature.Error.GetType()}. "
+                    + $"Request path: {exceptionHandlerPathFeature.Path}.");
+            }));
         }
     }
 }
