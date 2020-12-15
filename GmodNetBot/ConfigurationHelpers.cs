@@ -29,5 +29,10 @@ namespace GmodNetBot
         {
             return configuration["DiscordEndpoint"];
         }
+
+        public static ulong GetDiscordErrorLogId(this IConfiguration configuration)
+        {
+            return ulong.Parse(configuration["DiscordErrorLogId"]);
+        }
     }
 }

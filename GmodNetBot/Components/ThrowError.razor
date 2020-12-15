@@ -1,0 +1,10 @@
+﻿@page "/ThrowError"
+
+<h3>ThrowError</h3>
+
+@code { 
+    override protected Task OnInitializedAsync()
+    {
+        throw new Exception("Test Exception");
+    }
+}

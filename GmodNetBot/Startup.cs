@@ -14,6 +14,9 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Json;
+using Microsoft.AspNetCore.Diagnostics;
+using Discord;
+using Discord.WebSocket;
 
 namespace GmodNetBot
 {
@@ -47,7 +50,24 @@ namespace GmodNetBot
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler(errorApp => 
+                errorApp.Run(async context =>
+                {
+                    context.Response.StatusCode = 500;
+                    context.Response.ContentType = "text/plain";
+
+                    IExceptionHandlerPathFeature exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+
+                    await context.Response.WriteAsync($"Error 500: Internal Server Error. You unique request id is {context.TraceIdentifier}." +
+                        "Contact administrator and provide request id to get help.");
+
+                    DiscordSocketClient discord_client = context.RequestServices.GetService<DiscordClientProvider>().Client;
+
+                    IConfiguration configuration = context.RequestServices.GetService<IConfiguration>();
+
+                    _ = discord_client.GetGuild(configuration.GetDiscordServerId()).GetTextChannel(configuration.GetDiscordErrorLogId())
+                        .SendMessageAsync($"Web error 500. Request id {context.TraceIdentifier}. Error type: {exceptionHandlerPathFeature.Error.GetType()}");
+                }));
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
