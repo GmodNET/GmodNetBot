@@ -81,10 +81,10 @@ namespace GmodNetBot
                     request_cookies.Append($"\n{p.Key}: {p.Value}");
                 }
 
-                ILogger logger = context.RequestServices.GetService<ILogger>();
+                ILogger<Program> logger = context.RequestServices.GetService<ILogger<Program>>();
 
                 logger.LogError($"Exception was thrown while processing request {context.TraceIdentifier}.\n" +
-                    $"Request path: {exceptionHandlerPathFeature.Path}" +
+                    $"Request path: {exceptionHandlerPathFeature.Path}\n" +
                     $"Exception: {exceptionHandlerPathFeature.Error}\n" +
                     $"Request query: {context.Request.QueryString.Value}\n" +
                     $"Request headers: {request_headers}\n" +
