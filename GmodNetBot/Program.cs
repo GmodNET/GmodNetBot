@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
+using System.Security.Cryptography.X509Certificates;
 
 namespace GmodNetBot
 {
@@ -42,6 +43,18 @@ namespace GmodNetBot
                 .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureKestrel((context, options) =>
+                    {
+                        IWebHostEnvironment env = context.HostingEnvironment;
+                        if(env.IsProduction())
+                        {
+                            options.ListenAnyIP(80);
+                            options.ListenAnyIP(443, config =>
+                            {
+                                config.UseHttps(X509Certificate2.CreateFromPemFile("cert.pem", "cert.key"));
+                            });
+                        }
+                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }
