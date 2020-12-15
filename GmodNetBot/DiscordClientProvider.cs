@@ -20,7 +20,8 @@ namespace GmodNetBot
         {
             client = new DiscordSocketClient();
             client.LoginAsync(TokenType.Bot, configuration["BotSecret"]).Wait();
-            client.StartAsync();
+            client.StartAsync().Wait();
+            client.SetGameAsync("https://bot.gmodnet.xyz", type: ActivityType.Watching).Wait();
 
             applicationLifetime.ApplicationStopping.Register(OnShutdown);
         }
