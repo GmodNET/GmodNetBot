@@ -112,10 +112,7 @@ namespace GmodNetBot.Components
 
             GitHubClient githubClient = githubProvider.GetClient();
 
-            var orgRepos = await githubClient.Repository.GetAllForOrg("GmodNET", new ApiOptions()
-            {
-                PageSize = 100
-            });
+            var orgRepos = await githubClient.Repository.GetAllForOrg("GmodNET");
 
             bool foundUser = false;
 
