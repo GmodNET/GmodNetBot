@@ -58,7 +58,7 @@ namespace GmodNetBot
 
                     IExceptionHandlerPathFeature exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
-                    await context.Response.WriteAsync($"Error 500: Internal Server Error. You unique request id is {context.TraceIdentifier}." +
+                    await context.Response.WriteAsync($"Error 500: Internal Server Error. You unique request id is {context.TraceIdentifier}. " +
                         "Contact administrator and provide request id to get help.");
 
                     DiscordSocketClient discord_client = context.RequestServices.GetService<DiscordClientProvider>().Client;
@@ -66,7 +66,8 @@ namespace GmodNetBot
                     IConfiguration configuration = context.RequestServices.GetService<IConfiguration>();
 
                     _ = discord_client.GetGuild(configuration.GetDiscordServerId()).GetTextChannel(configuration.GetDiscordErrorLogId())
-                        .SendMessageAsync($"Web error 500. Request id {context.TraceIdentifier}. Error type: {exceptionHandlerPathFeature.Error.GetType()}");
+                        .SendMessageAsync($"Web error 500. Request id {context.TraceIdentifier}. Error type: {exceptionHandlerPathFeature.Error.GetType()}. "
+                        + $"Request path: {exceptionHandlerPathFeature.Path}.");
                 }));
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
