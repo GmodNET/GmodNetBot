@@ -19,6 +19,8 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics;
 using Discord;
 using Discord.WebSocket;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 
 namespace GmodNetBot
 {
@@ -64,6 +66,29 @@ namespace GmodNetBot
 
                 await context.Response.WriteAsync($"Error 500: Internal Server Error. You unique request id is {context.TraceIdentifier}. " +
                     "Contact administrator and provide request id to get help.");
+
+                StringBuilder request_headers = new StringBuilder();
+
+                foreach(KeyValuePair<string, StringValues> p in context.Request.Headers)
+                {
+                    request_headers.Append($"\n{p.Key}: {p.Value}");
+                }
+
+                StringBuilder request_cookies = new StringBuilder();
+
+                foreach(KeyValuePair<string, string> p in context.Request.Cookies)
+                {
+                    request_cookies.Append($"\n{p.Key}: {p.Value}");
+                }
+
+                ILogger logger = context.RequestServices.GetService<ILogger>();
+
+                logger.LogError($"Exception was thrown while processing request {context.TraceIdentifier}.\n" +
+                    $"Request path: {exceptionHandlerPathFeature.Path}" +
+                    $"Exception: {exceptionHandlerPathFeature.Error}\n" +
+                    $"Request query: {context.Request.QueryString.Value}\n" +
+                    $"Request headers: {request_headers}\n" +
+                    $"Request cookies: {request_cookies}");
 
                 DiscordSocketClient discord_client = context.RequestServices.GetService<DiscordClientProvider>().Client;
 
